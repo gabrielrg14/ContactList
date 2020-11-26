@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.sql.Blob;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -29,10 +30,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText edTxtCtPhone;
     private EditText edTxtCtNickname;
     private Button btnSave;
-    private Button btnDelete;
 
     // Atributos para controle da lista de contatos
     private List<Contact> contactList;
+    private ListView lvContacts;
+    private List<String> formattedContactsNameList;
+    private ArrayAdapter<String> lvAdapter;
 
     // Atributos de banco de dados
     private ContactDatabaseHelper ctDBHelper;
@@ -60,14 +63,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         edTxtCtNickname = findViewById(R.id.ct_nickname);
 
         btnSave = findViewById(R.id.btn_save);
-        btnDelete = findViewById(R.id.btn_delete);
 
+        lvContacts = findViewById(R.id.ct_list);
         ctDBHelper = new ContactDatabaseHelper(this);
         contactList = ctDBHelper.getAllContacts();
 
+        // Carrega o ListView
+        formattedContactsNameList = new ArrayList<>();
+        for(Contact ct : contactList) {
+            formattedContactsNameList.add(createDisplayContactName(ct));
+        }
+        lvAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1,
+                formattedContactsNameList);
+
+        lvContacts.setAdapter(lvAdapter);
+
         // Define tratadores para os botões
         btnSave.setOnClickListener(this);
-        btnDelete.setOnClickListener(this);
     }
 
     @Override
@@ -92,16 +105,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+    private String createDisplayContactName(Contact ct) {
+        return ct.getName() + " - " + ct.getNickname();
+    }
+
     @Override
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.btn_save:
                 // Botão Salvar
                 saveContact();
-                break;
-            case R.id.btn_delete:
-                // Botão Remover
-                deleteContact();
                 break;
         }
     }
@@ -116,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(ctDBHelper.addContact(ct)) {
             contactList.add(ct);
+            formattedContactsNameList.add(createDisplayContactName(ct));
 
             // Limpar Campos
             edTxtCtName.setText("");
@@ -124,15 +138,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Toast.makeText(this, "Ocorreu um erro durante a inserção do contato.", Toast.LENGTH_LONG).show();
         }
+        lvAdapter.notifyDataSetChanged();
 
+        /* Log do contato cadastrado para visualizar - teste
         List<Contact> contatos = ctDBHelper.getAllContacts();
         int tam = contatos.size();
         Contact cadastrado = contatos.get(tam-1);
-
         Log.i("CONTACT_DB", "Contato cadastrado: " + cadastrado.getCode() + " " + cadastrado.getName() + " " + cadastrado.getPhone() + " " + cadastrado.getNickname());
+         */
     }
 
-    private void deleteContact() {
-        // TODO
+    private void deleteContact(Contact ct) {
+        if(ctDBHelper.deleteContact(ct) == -1) {
+            formattedContactsNameList.remove(createDisplayContactName(ct));
+            contactList.remove(ct);
+        } else {
+            Toast.makeText(this, "Erro na remoção do contato", Toast.LENGTH_LONG).show();
+        }
+        lvAdapter.notifyDataSetChanged();
     }
 }
