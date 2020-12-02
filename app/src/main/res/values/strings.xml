@@ -10,6 +10,8 @@
     <string name="hello_start_fragment">Hello start fragment. Arg: %1$s</string>
 
     <string name="save">Salvar</string>
+    <string name="delete">Remover</string>
+    <string name="cancel">Cancelar</string>
     <string name="ct_code_hint">Código</string>
     <string name="ct_name_hint">Nome</string>
     <string name="ct_phone_hint">Fone</string>

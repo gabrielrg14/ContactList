@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -131,12 +132,12 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
         return contactList;
     }
 
-    public int deleteContact(Contact ct) {
-        String code = String.valueOf(ct.getCode());
+    public int deleteContact(int code) {
+        String strCode = String.valueOf(code);
         int dRows = wDb.delete(
                 CONTACT_TB,
                 CONTACT_CODE + " = ?",
-                new String[]{code}
+                new String[]{strCode}
         );
 
         return dRows;

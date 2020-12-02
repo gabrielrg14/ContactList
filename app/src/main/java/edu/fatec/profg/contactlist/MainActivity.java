@@ -1,5 +1,6 @@
 package edu.fatec.profg.contactlist;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -13,6 +14,7 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,13 +25,9 @@ import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
-    // Atributos de layout
-    private EditText edTxtCtName;
-    private EditText edTxtCtPhone;
-    private EditText edTxtCtNickname;
-    private Button btnSave;
+    private Button fab;
 
     // Atributos para controle da lista de contatos
     private List<Contact> contactList;
@@ -43,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_first); // foi trocado de main_activity para testar saveContact()
+        setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -57,30 +55,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }); */
 
-        // Obter referência dos objetos da GUI
-        edTxtCtName = findViewById(R.id.ct_name);
-        edTxtCtPhone = findViewById(R.id.ct_phone);
-        edTxtCtNickname = findViewById(R.id.ct_nickname);
-
-        btnSave = findViewById(R.id.btn_save);
+        fab = findViewById(R.id.fab);
 
         lvContacts = findViewById(R.id.ct_list);
         ctDBHelper = new ContactDatabaseHelper(this);
-        contactList = ctDBHelper.getAllContacts();
 
-        // Carrega o ListView
-        formattedContactsNameList = new ArrayList<>();
-        for(Contact ct : contactList) {
-            formattedContactsNameList.add(createDisplayContactName(ct));
-        }
-        lvAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                formattedContactsNameList);
+        updateContactList();
 
-        lvContacts.setAdapter(lvAdapter);
+        // Define onClick nos itens da lista
+        lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int code = contactList.get(position).getCode();
+                Intent intent = new Intent(view.getContext(), ContactDetailsActivity.class);
+                intent.putExtra("CONTACT_ID", code);
+                startActivityForResult(intent, UPDATED_LIST_REQUEST);
+            }
+        });
 
         // Define tratadores para os botões
-        btnSave.setOnClickListener(this);
+        fab.setOnClickListener(this);
     }
 
     @Override
@@ -105,56 +99,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    private String createDisplayContactName(Contact ct) {
-        return ct.getName() + " - " + ct.getNickname();
-    }
-
     @Override
     public void onClick(View view) {
         switch(view.getId()) {
-            case R.id.btn_save:
-                // Botão Salvar
-                saveContact();
+            case R.id.fab:
+                // FAB
+                goToNewContactPage();
                 break;
         }
     }
 
-    private void saveContact() {
-        Contact ct = new Contact(
-                edTxtCtName.getText().toString(),
-                edTxtCtPhone.getText().toString(),
-                edTxtCtNickname.getText().toString(),
-                null // TODO
-        );
-
-        if(ctDBHelper.addContact(ct)) {
-            contactList.add(ct);
-            formattedContactsNameList.add(createDisplayContactName(ct));
-
-            // Limpar Campos
-            edTxtCtName.setText("");
-            edTxtCtPhone.setText("");
-            edTxtCtNickname.setText("");
-        } else {
-            Toast.makeText(this, "Ocorreu um erro durante a inserção do contato.", Toast.LENGTH_LONG).show();
-        }
-        lvAdapter.notifyDataSetChanged();
-
-        /* Log do contato cadastrado para visualizar - teste
-        List<Contact> contatos = ctDBHelper.getAllContacts();
-        int tam = contatos.size();
-        Contact cadastrado = contatos.get(tam-1);
-        Log.i("CONTACT_DB", "Contato cadastrado: " + cadastrado.getCode() + " " + cadastrado.getName() + " " + cadastrado.getPhone() + " " + cadastrado.getNickname());
-         */
+    private void goToNewContactPage() {
+        Intent intent = new Intent(this, ContactDetailsActivity.class);
+        intent.putStringArrayListExtra("CONTACT_LIST", (ArrayList<String>) formattedContactsNameList);
+        startActivityForResult(intent, UPDATED_LIST_REQUEST);
     }
 
-    private void deleteContact(Contact ct) {
-        if(ctDBHelper.deleteContact(ct) == -1) {
-            formattedContactsNameList.remove(createDisplayContactName(ct));
-            contactList.remove(ct);
-        } else {
-            Toast.makeText(this, "Erro na remoção do contato", Toast.LENGTH_LONG).show();
+    public void onActivityResult(int requestCode, int resultCode,  Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == UPDATED_LIST_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                updateContactList();
+            }
         }
+    }
+
+    public void updateContactList() {
+        contactList = ctDBHelper.getAllContacts();
+
+        // Carrega o ListView
+        formattedContactsNameList = new ArrayList<>();
+        for(Contact ct : contactList) {
+            formattedContactsNameList.add(createDisplayContactName(ct));
+        }
+        lvAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1,
+                formattedContactsNameList);
+
+        lvContacts.setAdapter(lvAdapter);
+
         lvAdapter.notifyDataSetChanged();
     }
 }
