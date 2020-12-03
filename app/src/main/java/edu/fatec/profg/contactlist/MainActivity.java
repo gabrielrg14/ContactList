@@ -8,6 +8,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.View;
@@ -46,16 +48,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        // Snackbar foi comentado pois estava gerando erros ao ter trocado setContentView de main_activity
-        /* fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }); */
-
-        fab = findViewById(R.id.fab);
 
         lvContacts = findViewById(R.id.ct_list);
         ctDBHelper = new ContactDatabaseHelper(this);
