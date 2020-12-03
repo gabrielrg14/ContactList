@@ -47,6 +47,7 @@ tools:context=".ContactDetailsActivity">
             app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
+            android:id="@+id/txtView_nickname"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -91,34 +92,30 @@ tools:context=".ContactDetailsActivity">
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/field_nickname">
+
             <Button
                 android:id="@+id/btn_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/save"
-                app:layout_constraintTop_toBottomOf="@id/ct_nickname" />
-
+                app:layout_constraintTop_toBottomOf="@id/field_nickname" />
 
             <Button
                 android:id="@+id/btn_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/delete"
-                app:layout_constraintTop_toBottomOf="@id/ct_nickname" />
-
+                app:layout_constraintTop_toBottomOf="@id/field_nickname" />
 
             <Button
                 android:id="@+id/btn_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cancel"
-                app:layout_constraintTop_toBottomOf="@id/ct_nickname" />
+                app:layout_constraintTop_toBottomOf="@id/field_nickname" />
 
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,20 +1,31 @@
 package edu.fatec.profg.contactlist;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.w3c.dom.Text;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class ContactDetailsActivity extends BaseActivity implements View.OnClickListener {
 
     // Atributos de layout
+    private ImageView imgViewCt;
+    private TextView txtViewNickname;
     private EditText edTxtCtName;
     private EditText edTxtCtPhone;
     private EditText edTxtCtNickname;
@@ -24,7 +35,6 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
     private ArrayList<String> contactList;
 
     public int contactId;
-    public char[] initialsName;
 
     // Atributos de banco de dados
     private ContactDatabaseHelper ctDBHelper;
@@ -39,6 +49,8 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
         contactList = getIntent().getStringArrayListExtra("CONTACT_LIST");
 
         // Obter referência dos objetos da GUI
+        imgViewCt = findViewById(R.id.profile_img);
+        txtViewNickname = findViewById(R.id.txtView_nickname);
         edTxtCtName = findViewById(R.id.field_name);
         edTxtCtPhone = findViewById(R.id.field_phone);
         edTxtCtNickname = findViewById(R.id.field_nickname);
@@ -83,6 +95,14 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
         contact = ctDBHelper.getContact(contactId);
 
         if (contact != null) {
+
+            if(contact.getImage() != null) {
+                byte[] byteArray = contact.getImage();
+                Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                imgViewCt.setImageBitmap(bmp);
+            }
+
+            txtViewNickname.setText(contact.getNickname());
             edTxtCtName.setText(contact.getName());
             edTxtCtPhone.setText(contact.getPhone());
             edTxtCtNickname.setText(contact.getNickname());
@@ -90,23 +110,27 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
     }
 
     private void saveContact() {
+        // Converte a imagem do ImageView em byte array
+        Bitmap bitmap = ((BitmapDrawable) imgViewCt.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] img = baos.toByteArray();
+
+        // Gera as iniciais do nome do contato para salvar no Banco de dados
+        String contactName = edTxtCtName.getText().toString();
+        String[] separatedName = contactName.split(" ");
+        StringBuilder initials_name = new StringBuilder();
+        for (int i = 0; i < separatedName.length; i++) {
+            initials_name.append(separatedName[i].toUpperCase().charAt(0));
+        }
+
         Contact ct = new Contact(
                 edTxtCtName.getText().toString(),
+                initials_name.toString(),
                 edTxtCtPhone.getText().toString(),
                 edTxtCtNickname.getText().toString(),
-                null // TODO
+                img
         );
-
-        // Caso a imagem não seja cadastrada, gera as iniciais do nome do contato
-        if(ct.getImage() == null) {
-            String contactName = ct.getName();
-            String[] separatedName = contactName.split(" ");
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < separatedName.length; i++) {
-                sb.append(separatedName[i].toUpperCase().charAt(0));
-            }
-            Log.i("INITIALS", "" + sb.toString());
-        }
 
         // caso não esteja vendo um contato ja criado, faz criacao
         if (contactId == -1) {
@@ -124,9 +148,10 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
             Contact updatedCt = new Contact(
                     contactId,
                     edTxtCtName.getText().toString(),
+                    initials_name.toString(),
                     edTxtCtPhone.getText().toString(),
                     edTxtCtNickname.getText().toString(),
-                    null // TODO
+                    img
             );
 
             if(ctDBHelper.updateContact(updatedCt) == 1) {

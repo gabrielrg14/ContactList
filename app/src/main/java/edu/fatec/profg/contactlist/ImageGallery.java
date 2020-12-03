@@ -16,7 +16,7 @@ public class ImageGallery extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_first);
+        setContentView(R.layout.activity_contact_details);
         ImageView buttonLoadImage = (ImageView) findViewById(R.id.profile_img);
         buttonLoadImage.setOnClickListener(new View.OnClickListener() {
             @Override

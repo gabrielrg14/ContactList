@@ -20,6 +20,7 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
     public static final String CONTACT_TB = "contact";
     public static final String CONTACT_CODE = "code";
     public static final String CONTACT_NAME = "name";
+    public static final String CONTACT_INITIALS = "initials_name";
     public static final String CONTACT_PHONE = "phone";
     public static final String CONTACT_NICKNAME = "nickname";
     public static final String CONTACT_IMAGE = "image";
@@ -36,6 +37,7 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
         sb.append(CONTACT_TB); sb.append(" (");
         sb.append(CONTACT_CODE); sb.append(" INTEGER PRIMARY KEY AUTOINCREMENT, ");
         sb.append(CONTACT_NAME); sb.append(" TEXT NOT NULL, ");
+        sb.append(CONTACT_INITIALS); sb.append(" TEXT NOT NULL, ");
         sb.append(CONTACT_PHONE); sb.append(" TEXT NOT NULL, ");
         sb.append(CONTACT_NICKNAME); sb.append(" TEXT NOT NULL, ");
         sb.append(CONTACT_IMAGE); sb.append(" BLOB");
@@ -63,6 +65,7 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
     public boolean addContact(Contact ct) {
         ContentValues cv = new ContentValues();
         cv.put(CONTACT_NAME, ct.getName());
+        cv.put(CONTACT_INITIALS, ct.getInitials_name());
         cv.put(CONTACT_PHONE, ct.getPhone());
         cv.put(CONTACT_NICKNAME, ct.getNickname());
         cv.put(CONTACT_IMAGE, ct.getImage());
@@ -83,6 +86,7 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
                 new String[] {
                         CONTACT_CODE,
                         CONTACT_NAME,
+                        CONTACT_INITIALS,
                         CONTACT_PHONE,
                         CONTACT_NICKNAME,
                         CONTACT_IMAGE
@@ -99,6 +103,7 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
             ct = new Contact(
                     c.getInt(c.getColumnIndex(CONTACT_CODE)),
                     c.getString(c.getColumnIndex(CONTACT_NAME)),
+                    c.getString(c.getColumnIndex(CONTACT_INITIALS)),
                     c.getString(c.getColumnIndex(CONTACT_PHONE)),
                     c.getString(c.getColumnIndex(CONTACT_NICKNAME)),
                     c.getBlob(c.getColumnIndex(CONTACT_IMAGE))
@@ -120,6 +125,7 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
             ct = new Contact(
                     c.getInt(c.getColumnIndex(CONTACT_CODE)),
                     c.getString(c.getColumnIndex(CONTACT_NAME)),
+                    c.getString(c.getColumnIndex(CONTACT_INITIALS)),
                     c.getString(c.getColumnIndex(CONTACT_PHONE)),
                     c.getString(c.getColumnIndex(CONTACT_NICKNAME)),
                     c.getBlob(c.getColumnIndex(CONTACT_IMAGE))
@@ -147,6 +153,7 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(CONTACT_CODE, ct.getCode());
         cv.put(CONTACT_NAME, ct.getName());
+        cv.put(CONTACT_INITIALS, ct.getName());
         cv.put(CONTACT_PHONE, ct.getPhone());
         cv.put(CONTACT_NICKNAME, ct.getNickname());
         cv.put(CONTACT_IMAGE, ct.getImage());
