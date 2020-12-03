@@ -6,17 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".FirstFragment">
 
+    <ImageView
+        android:id="@+id/profile_img"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_min="100dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/ct_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/underlineColor"
         android:hint="@string/ct_name_hint"
         android:theme="@style/EditTextHint"
-        android:backgroundTint="@color/underlineColor"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_img" />
 
     <EditText
         android:id="@+id/ct_phone"
