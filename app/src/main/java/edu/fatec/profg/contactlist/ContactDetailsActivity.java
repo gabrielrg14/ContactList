@@ -24,6 +24,7 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
     private ArrayList<String> contactList;
 
     public int contactId;
+    public char[] initialsName;
 
     // Atributos de banco de dados
     private ContactDatabaseHelper ctDBHelper;
@@ -96,6 +97,17 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
                 null // TODO
         );
 
+        // Caso a imagem não seja cadastrada, gera as iniciais do nome do contato
+        if(ct.getImage() == null) {
+            String contactName = ct.getName();
+            String[] separatedName = contactName.split(" ");
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < separatedName.length; i++) {
+                sb.append(separatedName[i].toUpperCase().charAt(0));
+            }
+            Log.i("INITIALS", "" + sb.toString());
+        }
+
         // caso não esteja vendo um contato ja criado, faz criacao
         if (contactId == -1) {
 
@@ -118,9 +130,10 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
             );
 
             if(ctDBHelper.updateContact(updatedCt) == 1) {
+                Toast.makeText(this, "Contato atualizado com sucesso!", Toast.LENGTH_LONG).show();
                 Intent returnIntent = new Intent();
                 setResult(RESULT_OK,returnIntent);
-                Toast.makeText(this, "Contato atualizado com sucesso!", Toast.LENGTH_LONG).show();
+                finish();
             } else {
                 Toast.makeText(this, "Ocorreu um erro durante a atualização do contato.", Toast.LENGTH_LONG).show();
             }
