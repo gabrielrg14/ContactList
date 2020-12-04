@@ -153,7 +153,7 @@ public class ContactDatabaseHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(CONTACT_CODE, ct.getCode());
         cv.put(CONTACT_NAME, ct.getName());
-        cv.put(CONTACT_INITIALS, ct.getName());
+        cv.put(CONTACT_INITIALS, ct.getInitials_name());
         cv.put(CONTACT_PHONE, ct.getPhone());
         cv.put(CONTACT_NICKNAME, ct.getNickname());
         cv.put(CONTACT_IMAGE, ct.getImage());

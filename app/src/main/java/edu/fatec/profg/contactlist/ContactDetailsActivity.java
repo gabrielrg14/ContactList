@@ -30,6 +30,7 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
 
     // Atributos de layout
     private ImageView imgViewCt;
+    private TextView initial_name;
     private TextView txtViewNickname;
     private EditText edTxtCtName;
     private EditText edTxtCtPhone;
@@ -54,6 +55,7 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
 
         // Obter referência dos objetos da GUI
         imgViewCt = findViewById(R.id.profile_img);
+        initial_name = findViewById(R.id.contact_initials);
         txtViewNickname = findViewById(R.id.txtView_nickname);
         edTxtCtName = findViewById(R.id.field_name);
         edTxtCtPhone = findViewById(R.id.field_phone);
@@ -107,6 +109,8 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
                 byte[] byteArray = contact.getImage();
                 Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
                 imgViewCt.setImageBitmap(bmp);
+            } else {
+                initial_name.setText(contact.getInitials_name());
             }
 
             txtViewNickname.setText(contact.getNickname());
