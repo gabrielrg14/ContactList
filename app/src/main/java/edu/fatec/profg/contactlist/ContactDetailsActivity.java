@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,7 +31,8 @@ import java.util.ArrayList;
 public class ContactDetailsActivity extends BaseActivity implements View.OnClickListener {
 
     // Atributos de layout
-    private ImageButton imgViewCt;
+    private ImageView imgViewCt;
+    private TextView initial_name;
     private TextView txtViewNickname;
     private EditText edTxtCtName;
     private EditText edTxtCtPhone;
@@ -53,10 +55,9 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
 
         contactId = getIntent().getIntExtra("CONTACT_ID", -1);
 
-        contactList = getIntent().getStringArrayListExtra("CONTACT_LIST");
-
         // Obter referência dos objetos da GUI
         imgViewCt = findViewById(R.id.profile_img);
+        initial_name = findViewById(R.id.contact_initials);
         txtViewNickname = findViewById(R.id.txtView_nickname);
         edTxtCtName = findViewById(R.id.field_name);
         edTxtCtPhone = findViewById(R.id.field_phone);
@@ -110,6 +111,8 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
                 byte[] byteArray = contact.getImage();
                 Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
                 imgViewCt.setImageBitmap(bmp);
+            } else {
+                initial_name.setText(contact.getInitials_name());
             }
 
             txtViewNickname.setText(contact.getNickname());
@@ -120,11 +123,16 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
     }
 
     private void saveContact() {
-        // Converte a imagem do ImageView em byte array
-        Bitmap bitmap = ((BitmapDrawable) imgViewCt.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] img = baos.toByteArray();
+        byte[] img = null;
+        if(imgViewCt.getDrawable() != null) {
+            // Converte a imagem do ImageView em byte array
+            Bitmap bitmap = ((BitmapDrawable) imgViewCt.getDrawable()).getBitmap();
+            if(bitmap != null) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                img = baos.toByteArray();
+            }
+        }
 
         // Gera as iniciais do nome do contato para salvar no Banco de dados
         String contactName = edTxtCtName.getText().toString();
@@ -203,7 +211,7 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             try {
                 Uri imageUri = data.getData();
                 InputStream imageStream = null;
@@ -216,6 +224,22 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
                 e.printStackTrace();
             }
         }
+
+        // Estava assim na Branch feature/image-contact
+        /* if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            ImageButton imageButton = (ImageButton) findViewById(R.id.profile_img);
+            imageButton.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+        }*/
     }
 
     private Bitmap resizedBitmap(Bitmap imageBm, int maxSize) {

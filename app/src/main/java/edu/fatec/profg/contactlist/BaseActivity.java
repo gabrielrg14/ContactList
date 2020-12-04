@@ -2,6 +2,7 @@ package edu.fatec.profg.contactlist;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +13,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if(ct.getImage() != null) {
             byte[] byteArray = ct.getImage();
             Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
             return bmp + " - " + ct.getNickname();
             // TODO: mostrar a imagem na lista, atualmente está sendo mostrado o bitmap
         } else {
