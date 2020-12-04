@@ -1,15 +1,19 @@
 package edu.fatec.profg.contactlist;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +37,7 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
     public Button btnDelete;
     private Button btnCancel;
     private ArrayList<String> contactList;
+    private static int RESULT_LOAD_IMAGE = 1;
 
     public int contactId;
 
@@ -71,6 +76,7 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
         btnSave.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
+        imgViewCt.setOnClickListener(this);
     }
 
     @Override
@@ -88,6 +94,8 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
                 // Botão Cancelar
                 deleteContact();
                 break;
+            case R.id.profile_img:
+                accessGallery();
         }
     }
 
@@ -180,5 +188,31 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
         edTxtCtName.setText("");
         edTxtCtPhone.setText("");
         edTxtCtNickname.setText("");
+    }
+
+    private void accessGallery() {
+        Intent i = new Intent(
+                Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, RESULT_LOAD_IMAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+            Cursor cursor = getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            ImageButton imageButton = (ImageButton) findViewById(R.id.profile_img);
+            imageButton.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+        }
     }
 }
