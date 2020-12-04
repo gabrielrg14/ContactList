@@ -29,12 +29,9 @@ import java.util.List;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
-    private Button fab;
-
     // Atributos para controle da lista de contatos
     private List<Contact> contactList;
     private ListView lvContacts;
-    private ArrayList<String> formattedContactsNameList;
     private ArrayAdapter lvAdapter;
 
     // Atributos de banco de dados
@@ -52,6 +49,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         lvContacts = findViewById(R.id.ct_list);
         ctDBHelper = new ContactDatabaseHelper(this);
 
+        // Carrega os contatos no listView
         updateContactList();
 
         // Define onClick nos itens da lista
@@ -103,7 +101,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void goToNewContactPage() {
         Intent intent = new Intent(this, ContactDetailsActivity.class);
-        /*intent.putStringArrayListExtra("CONTACT_LIST", formattedContactsNameList);*/
         startActivityForResult(intent, UPDATED_LIST_REQUEST);
     }
 
@@ -120,19 +117,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void updateContactList() {
         contactList = ctDBHelper.getAllContacts();
 
+        // Carrega o ListView
         lvAdapter = new ContactAdapter(this, contactList);
         lvContacts.setAdapter(lvAdapter);
-
-        // Carrega o ListView
-        /*formattedContactsNameList = new ArrayList<>();
-        for(Contact ct : contactList) {
-            formattedContactsNameList.add(createDisplayContactName(ct));
-        }
-        lvAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                formattedContactsNameList);
-
-        lvContacts.setAdapter(lvAdapter);*/
 
         lvAdapter.notifyDataSetChanged();
     }
