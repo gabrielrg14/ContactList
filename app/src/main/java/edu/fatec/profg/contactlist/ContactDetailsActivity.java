@@ -52,8 +52,6 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
 
         contactId = getIntent().getIntExtra("CONTACT_ID", -1);
 
-        /*contactList = getIntent().getStringArrayListExtra("CONTACT_LIST");*/
-
         // Obter referência dos objetos da GUI
         imgViewCt = findViewById(R.id.profile_img);
         txtViewNickname = findViewById(R.id.txtView_nickname);
@@ -206,7 +204,7 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
             Uri selectedImage = data.getData();
             String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
