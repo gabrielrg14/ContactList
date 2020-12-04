@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -51,7 +52,7 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
 
         contactId = getIntent().getIntExtra("CONTACT_ID", -1);
 
-        contactList = getIntent().getStringArrayListExtra("CONTACT_LIST");
+        /*contactList = getIntent().getStringArrayListExtra("CONTACT_LIST");*/
 
         // Obter referência dos objetos da GUI
         imgViewCt = findViewById(R.id.profile_img);
@@ -118,11 +119,16 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
     }
 
     private void saveContact() {
-        // Converte a imagem do ImageView em byte array
-        Bitmap bitmap = ((BitmapDrawable) imgViewCt.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] img = baos.toByteArray();
+        byte[] img = null;
+        if(imgViewCt.getDrawable() != null) {
+            // Converte a imagem do ImageView em byte array
+            Bitmap bitmap = ((BitmapDrawable) imgViewCt.getDrawable()).getBitmap();
+            if(bitmap != null) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                img = baos.toByteArray();
+            }
+        }
 
         // Gera as iniciais do nome do contato para salvar no Banco de dados
         String contactName = edTxtCtName.getText().toString();

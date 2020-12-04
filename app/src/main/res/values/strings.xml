@@ -16,4 +16,6 @@
     <string name="ct_name_hint">Nome</string>
     <string name="ct_phone_hint">Fone</string>
     <string name="ct_nickname_hint">Apelido</string>
+    <string name="image_contact_description">Imagem do contato</string>
+    <string name="nickname_contact">Apelido</string>
 </resources>

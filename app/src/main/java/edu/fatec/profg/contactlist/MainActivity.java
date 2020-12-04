@@ -34,8 +34,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     // Atributos para controle da lista de contatos
     private List<Contact> contactList;
     private ListView lvContacts;
-    private List<String> formattedContactsNameList;
-    private ArrayAdapter<String> lvAdapter;
+    private ArrayList<String> formattedContactsNameList;
+    private ArrayAdapter lvAdapter;
 
     // Atributos de banco de dados
     private ContactDatabaseHelper ctDBHelper;
@@ -103,7 +103,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void goToNewContactPage() {
         Intent intent = new Intent(this, ContactDetailsActivity.class);
-        intent.putStringArrayListExtra("CONTACT_LIST", (ArrayList<String>) formattedContactsNameList);
+        /*intent.putStringArrayListExtra("CONTACT_LIST", formattedContactsNameList);*/
         startActivityForResult(intent, UPDATED_LIST_REQUEST);
     }
 
@@ -120,8 +120,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void updateContactList() {
         contactList = ctDBHelper.getAllContacts();
 
+        lvAdapter = new ContactAdapter(this, contactList);
+        lvContacts.setAdapter(lvAdapter);
+
         // Carrega o ListView
-        formattedContactsNameList = new ArrayList<>();
+        /*formattedContactsNameList = new ArrayList<>();
         for(Contact ct : contactList) {
             formattedContactsNameList.add(createDisplayContactName(ct));
         }
@@ -129,7 +132,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 android.R.layout.simple_list_item_1,
                 formattedContactsNameList);
 
-        lvContacts.setAdapter(lvAdapter);
+        lvContacts.setAdapter(lvAdapter);*/
 
         lvAdapter.notifyDataSetChanged();
     }
