@@ -9,4 +9,5 @@
     <color name="colorRemove">#ff2335</color>
     <color name="colorCancel">#a7a8a9</color>
     <color name="colorTextRemove">#FFFFFF</color>
+    <color name="color_border">#a49fff</color>
 </resources>
