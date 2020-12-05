@@ -224,22 +224,6 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
                 e.printStackTrace();
             }
         }
-
-        // Estava assim na Branch feature/image-contact
-        /* if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-            Cursor cursor = getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-
-            ImageButton imageButton = (ImageButton) findViewById(R.id.profile_img);
-            imageButton.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-        }*/
     }
 
     private Bitmap resizedBitmap(Bitmap imageBm, int maxSize) {
