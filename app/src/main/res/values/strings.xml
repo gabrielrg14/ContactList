@@ -18,4 +18,5 @@
     <string name="ct_nickname_hint">Apelido</string>
     <string name="image_contact_description">Imagem do contato</string>
     <string name="nickname_contact">Apelido</string>
+    <string name="Call">ligar</string>
 </resources>

@@ -40,6 +40,7 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
     private Button btnSave;
     public Button btnDelete;
     private Button btnCancel;
+    private Button btnCall;
     private ArrayList<String> contactList;
     private static int RESULT_LOAD_IMAGE = 0;
 
@@ -66,11 +67,13 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
         btnSave = findViewById(R.id.btn_save);
         btnDelete = findViewById(R.id.btn_delete);
         btnCancel = findViewById(R.id.btn_cancel);
+        btnCall = findViewById(R.id.btn_call);
 
         ctDBHelper = new ContactDatabaseHelper(this);
 
         if (contactId == -1) {
             btnDelete.setVisibility(View.GONE);
+            btnCall.setVisibility(View.GONE);
         } else {
             getContactDetails();
         }
@@ -79,6 +82,7 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
         btnSave.setOnClickListener(this);
         btnDelete.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
+        btnCall.setOnClickListener(this);
         imgViewCt.setOnClickListener(this);
     }
 
@@ -97,10 +101,16 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
                 // Botão Cancelar
                 deleteContact();
                 break;
+            case R.id.btn_call:
+                // Botão Ligar
+                goCall();
+                break;
             case R.id.profile_img:
                 accessGallery();
         }
     }
+
+
 
     private void getContactDetails() {
         contact = ctDBHelper.getContact(contactId);
@@ -191,6 +201,12 @@ public class ContactDetailsActivity extends BaseActivity implements View.OnClick
         } else {
             Toast.makeText(this, "Erro na remoção do contato", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void goCall() {
+        String phone = edTxtCtPhone.getText().toString();
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+        startActivity(intent);
     }
 
     private void resetForm() {
